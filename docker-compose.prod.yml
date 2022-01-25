@@ -1,0 +1,40 @@
+version: "3.8"
+
+services: 
+    db:
+        image: mysql:5.7
+        container_name: deno-db-dev
+        command: --default-authentication-plugin=mysql_native_password --explicit_defaults_for_timestamp
+        restart: always
+        volumes: 
+            # - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+            - db-data:/var/lib/mysql
+        ports:
+            - 3306:3306
+        environment:
+            MYSQL_DATABASE: ${DB_PASSWORD-testmoa}
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD-testmoa}
+    api:
+        build:
+            context: ./
+            dockerfile: Dockerfile
+        image: deno-api:prod
+        container_name: deno-api-prod
+        restart: always
+        depends_on: 
+            - db
+        volumes: 
+            - ./:/usr/app
+        ports: 
+            - ${PORT-5000}:${PORT-5000}
+        environment: 
+            - DB_HOST=db # this should be identical to the database service name
+            - DB_USERNAME=${DB_USERNAME-root}
+            - DB_DATABASE=${DB_DATABASE-testmoa}
+            - DB_PASSWORD=${DB_PASSWORD-testmoa}
+            - TOKEN_SECRET=${TOKEN_SECRET-secret}
+            - PORT=${PORT-5000}
+
+volumes:
+    db-data:
+        name: deno-db-dev-data

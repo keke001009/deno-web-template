@@ -1,0 +1,38 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Git pull') {
+            steps {
+                git branch: 'main', url: 'https://github.com/keke001009/deno-web-template.git'
+            }
+        }
+        stage('Unit Test') {
+            steps {
+                echo 'skip'
+            }
+        }
+        stage('Build') {
+            steps {
+                echo '##### Build #####'
+                sh 'docker-compose -f docker-compose.prod.yml build'
+            }
+        }
+       stage('Tag') {
+            steps {
+                echo 'skip'
+            }
+        }
+        stage('Push') {
+            steps {
+                echo 'skip'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploy'
+                sh 'docker-compose -f docker-compose.prod.yml up -d'
+            }
+        }
+    }
+}
