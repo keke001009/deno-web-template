@@ -7,8 +7,6 @@ export const hasUserRole = (_user: any, roles?: UserRole | UserRole[]) => {
 
 export const checkRole = (roles?: UserRole | UserRole[]) => {
   return async (ctx: Context, next: () => Promise<void>) => {
-    return await next();
-    /*
     const { user } = ctx;
     if (!user) {
       throw new httpErrors.Unauthorized("unauthorized");
@@ -23,6 +21,5 @@ export const checkRole = (roles?: UserRole | UserRole[]) => {
     }
 
     await next();
-    */
   };
 };
