@@ -7,6 +7,8 @@
     "hmac": "https://deno.land/x/crypto@v0.10.0/hmac.ts",
     "base64url": "https://deno.land/std@0.103.0/encoding/base64url.ts",
     "/": "./src/",
-    "./": "./"
+    "./": "./",
+    "types" : "./src/types/mod.ts",
+    "middlewares" : "./src/middlewares/mod.ts"
   }
 }

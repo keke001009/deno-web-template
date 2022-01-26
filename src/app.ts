@@ -1,7 +1,12 @@
 import { Application, Router } from "oak";
-import { authenticate, logger, responseTimeHeader } from "/middlewares/mod.ts";
+import {
+  authenticate,
+  logger,
+  errorHandler,
+  responseTimeHeader,
+} from "middlewares";
 
-import postsRouter from "./api/posts.ts";
+import routes from "./api/mod.ts";
 
 const app = new Application();
 const router = new Router();
@@ -15,7 +20,7 @@ router.get("/api", ({ response }) => {
 });
 
 app.use(router.routes());
-app.use(postsRouter.prefix("/api/posts").routes());
+app.use(errorHandler, routes.routes());
 app.use(router.allowedMethods());
 
 export default app;

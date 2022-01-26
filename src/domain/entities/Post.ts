@@ -1,4 +1,4 @@
-import { DataTypes, Model } from "../deps.ts";
+import { DataTypes, Model } from "/deps.ts";
 import { v4 as uuid } from "https://deno.land/std@0.74.0/uuid/mod.ts";
 
 /**
@@ -37,7 +37,7 @@ class Post extends Model {
     post.uuid = uuid.generate();
     post.username = usernames[i];
     post.content = contents[i];
-    console.log(Post);
+    // console.log(Post);
     await post.save();
     return post;
   }

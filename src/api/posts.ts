@@ -1,117 +1,125 @@
-import { Router, RouterContext } from "oak";
+import { Context, httpErrors, Middleware, Router, RouterMiddleware } from "oak";
 import { v4 as uuid } from "https://deno.land/std@0.74.0/uuid/mod.ts";
 
-import Post from "/domain/Post.ts";
+import Post from "/domain/entities/Post.ts";
+import { UserRole } from "types";
+import { checkRole, transaction } from "/middlewares/mod.ts";
+import db from "../db.ts";
 
-const router = new Router();
+type api2 = [any, any];
+type api3 = [any, any, any];
 
-// R
-router.get("/", async ({ response }) => {
-  try {
-    const posts = await Post.all();
+export const getPosts: api2 = [
+  checkRole(UserRole.USER),
+  async ({ response }: Context) => {
+    throw new httpErrors.BadRequest("잘못된 요청입니다.");
+    throw new Error("error");
+    response.body = "12312"; // posts;
+  },
+];
 
-    response.body = posts;
-  } catch (err) {
-    console.error(err);
-    response.body = { error: "Something went wrong" };
-    response.status = 500;
-  }
-});
+export const makeSample = [
+  checkRole(UserRole.USER),
+  async ({ response }: Context) => {
+    try {
+      const post = await Post.makeSample();
+      response.body = post;
+    } catch (err) {
+      console.error(err);
+      response.body = { error: "system error" };
+      response.status = 500;
+    }
+  },
+];
 
-// C
-router.post("/sample", async ({ request, response }) => {
-  try {
-    const post = await Post.makeSample();
-    response.body = post;
-  } catch (err) {
-    console.error(err);
-    response.body = { error: "system error" };
-    response.status = 500;
-  }
-});
+export const createPost = [
+  checkRole(UserRole.USER),
+  async ({ request, response }: Context) => {
+    try {
+      const { username, content } = await request.body().value;
 
-// C
-router.post("/", async ({ request, response }) => {
-  try {
+      const post = await Post.create({
+        username,
+        content,
+        uuid: uuid.generate(),
+      });
+
+      response.body = post;
+    } catch (err) {
+      console.log(err);
+      response.body = { error: "Something went wrong" };
+      response.status = 500;
+    }
+  },
+];
+
+export const updatePost = [
+  checkRole(UserRole.USER),
+  async ({ params, request, response }: any) => {
     const { username, content } = await request.body().value;
+    try {
+      const post = await Post.where("uuid", params.uuid).first();
 
-    const post = await Post.create({
-      username,
-      content,
-      uuid: uuid.generate(),
-    });
+      if (!post) {
+        response.body = { post: "Post not found" };
+        response.status = 404;
+        return;
+      }
 
-    response.body = post;
-  } catch (err) {
-    console.log(err);
-    response.body = { error: "Something went wrong" };
-    response.status = 500;
-  }
-});
+      post.username = username;
+      post.content = content;
 
-// U
-router.put("/:uuid", async ({ params, request, response }) => {
-  const { username, content } = await request.body().value;
-  try {
-    const post = await Post.where("uuid", params.uuid).first();
+      await post.update();
 
-    if (!post) {
-      response.body = { post: "Post not found" };
-      response.status = 404;
-      return;
+      response.body = post;
+    } catch (err) {
+      console.log(err);
+      response.body = { error: "Something went wrong" };
+      response.status = 500;
     }
+  },
+];
 
-    post.username = username;
-    post.content = content;
+export const deletePost = [
+  checkRole(UserRole.USER),
+  async ({ params, response }: any) => {
+    try {
+      const post = await Post.where("uuid", params.uuid).first();
 
-    await post.update();
+      if (!post) {
+        response.body = { post: "Post not found" };
+        response.status = 404;
+        return;
+      }
 
-    response.body = post;
-  } catch (err) {
-    console.log(err);
-    response.body = { error: "Something went wrong" };
-    response.status = 500;
-  }
-});
+      await post.delete();
 
-// D
-router.delete("/:uuid", async ({ params, response }) => {
-  try {
-    const post = await Post.where("uuid", params.uuid).first();
-
-    if (!post) {
-      response.body = { post: "Post not found" };
-      response.status = 404;
-      return;
+      response.body = { message: "Post deleted successfully" };
+    } catch (err) {
+      console.log(err);
+      response.body = { error: "Something went wrong" };
+      response.status = 500;
     }
+  },
+];
 
-    await post.delete();
+export const findPost = [
+  checkRole(UserRole.USER),
+  async ({ params, response }: any) => {
+    try {
+      const post = await Post.where("uuid", params.uuid).first();
 
-    response.body = { message: "Post deleted successfully" };
-  } catch (err) {
-    console.log(err);
-    response.body = { error: "Something went wrong" };
-    response.status = 500;
-  }
-});
+      if (!post) {
+        response.body = { post: "Post not found" };
+        response.status = 404;
+        return;
+      }
 
-// R : Find
-router.get("/:uuid", async ({ params, response }) => {
-  try {
-    const post = await Post.where("uuid", params.uuid).first();
-
-    if (!post) {
-      response.body = { post: "Post not found" };
-      response.status = 404;
-      return;
+      response.body = post;
+    } catch (err) {
+      console.log(err);
+      response.body = { error: "Something went wrong" };
+      response.status = 500;
     }
-
-    response.body = post;
-  } catch (err) {
-    console.log(err);
-    response.body = { error: "Something went wrong" };
-    response.status = 500;
-  }
-});
-
-export default router;
+  },
+];

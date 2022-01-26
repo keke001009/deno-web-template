@@ -1,6 +1,6 @@
 FROM denoland/deno:alpine
 
-EXPOSE 5000
+EXPOSE 5555
 
 RUN deno install -qAf --unstable https://raw.githubusercontent.com/denosaurs/denon/main/denon.ts
 

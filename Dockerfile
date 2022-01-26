@@ -1,6 +1,6 @@
 FROM denoland/deno:alpine
 
-EXPOSE 5000
+EXPOSE 5555
 
 WORKDIR /usr/app
 

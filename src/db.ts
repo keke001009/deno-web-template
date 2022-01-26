@@ -1,6 +1,6 @@
 import { Database, env } from "./deps.ts";
 
-import Post from "./domain/Post.ts";
+import Post from "/domain/entities/Post.ts";
 
 /**
  * mysql
