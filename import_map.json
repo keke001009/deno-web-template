@@ -4,11 +4,12 @@
     "denodb": "https://deno.land/x/denodb/mod.ts",
     "dotenv": "https://deno.land/x/dotenv/mod.ts",
     "djwt": "https://deno.land/x/djwt/mod.ts",
+    "validasaur": "https://deno.land/x/validasaur/mod.ts",
     "hmac": "https://deno.land/x/crypto@v0.10.0/hmac.ts",
     "base64url": "https://deno.land/std@0.103.0/encoding/base64url.ts",
     "/": "./src/",
     "./": "./",
-    "types" : "./src/types/mod.ts",
-    "middlewares" : "./src/middlewares/mod.ts"
+    "types": "./src/types/mod.ts",
+    "middlewares": "./src/middlewares/mod.ts"
   }
 }

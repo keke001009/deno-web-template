@@ -1,4 +1,5 @@
 import { DataTypes, Model } from "/deps.ts";
+import { isNumber, required, validate } from "validasaur";
 import { v4 as uuid } from "https://deno.land/std@0.74.0/uuid/mod.ts";
 
 /**
@@ -19,6 +20,10 @@ class Post extends Model {
     content: { type: DataTypes.STRING },
   };
 
+  static schema = {
+    username: [required],
+    content: [required],
+  };
   /**
    * 개발용 데이터
    * @generator 샘플 코드

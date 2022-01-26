@@ -1,8 +1,8 @@
 import { Application, Router } from "oak";
 import {
   authenticate,
-  logger,
   errorHandler,
+  logger,
   responseTimeHeader,
 } from "middlewares";
 
