@@ -1,12 +1,18 @@
 import { delay } from "https://deno.land/std@0.122.0/async/delay.ts";
+import {
+  assert,
+  assertEquals,
+} from "https://deno.land/std@0.122.0/testing/asserts.ts";
+import db from '/db.ts'
+import { 
+  pagingPost
+} from '/domain/services/post.ts'
+import { Database, config } from "/deps.ts";
+// await db.sync()
 
-Deno.test("async hello world", async () => {
-  const x = 1 + 2;
+Deno.test("Post 페이징 테스트", async (t) => {
+  await db.sync()
 
-  // await some async task
-  await delay(100);
-
-  if (x !== 3) {
-    throw Error("x should be equal to 3");
-  }
+  assertEquals(await pagingPost(), 1)
+  await db.close()
 });

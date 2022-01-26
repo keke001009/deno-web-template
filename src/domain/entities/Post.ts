@@ -10,7 +10,7 @@ import { v4 as uuid } from "https://deno.land/std@0.74.0/uuid/mod.ts";
  * @member content content
  */
 class Post extends Model {
-  static table = "posts";
+  static table = "post";
   static timestamps = true;
 
   static fields = {
