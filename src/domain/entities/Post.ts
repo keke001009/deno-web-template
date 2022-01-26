@@ -1,6 +1,7 @@
 import { DataTypes, Model } from "/deps.ts";
 import { isNumber, required, validate } from "validasaur";
 import { v4 as uuid } from "https://deno.land/std@0.74.0/uuid/mod.ts";
+import Comment from "./Comment.ts";
 
 /**
  * Post
@@ -19,6 +20,10 @@ class Post extends Model {
     username: { type: DataTypes.STRING },
     content: { type: DataTypes.STRING },
   };
+
+  static comments() {
+    return this.hasMany(Comment);
+  }
 
   static rules = {
     create: {

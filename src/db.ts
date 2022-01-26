@@ -1,8 +1,9 @@
-import { Database, env, Model } from "./deps.ts";
+import { Database, env, Model, } from "./deps.ts";
 import { Values } from "https://deno.land/x/denodb@v1.0.40/lib/data-types.ts";
 import { validate } from "validasaur";
 import Post from "/domain/entities/Post.ts";
-
+import Comment from "/domain/entities/Comment.ts";
+import { Relationships } from 'denodb';
 /**
  * mysql
  */
@@ -18,7 +19,9 @@ const db = new Database(
   },
 );
 
-db.link([Post]);
+Relationships.belongsTo(Post, Comment);
+
+db.link([Post, Comment]);
 
 const create = Model.create;
 const save = Model.prototype.save;
@@ -26,7 +29,7 @@ const update = Model.prototype.update;
 function getValue(self: any): Values {
   const model: any = self.constructor;
   const values: Values = {};
-  const fields = model.schema;
+  const fields = model.fields;
   if (model) {
     for (const field of Object.keys(fields)) {
       if (self?.[field]) {
