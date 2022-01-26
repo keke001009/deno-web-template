@@ -41,8 +41,8 @@ Model.create = async function (values: Values | Values[]): Promise<any> {
   const insertions = Array.isArray(values) ? values : [values];
   insertions.some(async (value) => {
     const model = this.constructor as any;
-    const rules = model.rules.create;
-    await validate(value, rules);
+    const rules = model?.rules?.create;
+    rules && await validate(value, rules);
   });
   return await create.call(this, values as any);
 };
@@ -50,16 +50,16 @@ Model.create = async function (values: Values | Values[]): Promise<any> {
 Model.prototype.save = async function (): Promise<any> {
   const values = getValue(this);
   const model = this.constructor as any;
-  const rules = model.rules.save;
-  await validate(values, rules);
+  const rules = model?.rules?.save;
+  rules && await validate(values, rules);
   return await save.call(this);
 };
 
 Model.prototype.update = async function (): Promise<any> {
   const values = getValue(this);
   const model = this.constructor as any;
-  const rules = model.rules.update;
-  await validate(values, rules);
+  const rules = model?.rules?.update;
+  rules && await validate(values, rules);
   return await update.call(this);
 };
 
