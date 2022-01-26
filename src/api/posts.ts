@@ -24,7 +24,7 @@ export const getPosts: api2 = [
   },
 ];
 
-export const createPost : api3 = [
+export const createPost: api3 = [
   checkRole(UserRole.USER),
   requestValidator({ bodyRules }),
   async ({ request, response }: Context) => {

@@ -20,9 +20,19 @@ class Post extends Model {
     content: { type: DataTypes.STRING },
   };
 
-  static schema = {
-    username: [required],
-    content: [required],
+  static rules = {
+    create: {
+      username: [required],
+      content: [required],
+    },
+    update: {
+      username: [required],
+      content: [required],
+    },
+    save: {
+      username: [required],
+      content: [required],
+    },
   };
   /**
    * 개발용 데이터

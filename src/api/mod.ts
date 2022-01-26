@@ -1,5 +1,5 @@
 import { Router, RouterContext } from "oak";
-import { getPosts, createPost, makeSample } from "./posts.ts";
+import { createPost, getPosts, makeSample } from "./posts.ts";
 const router = new Router();
 
 router.get("/posts", ...getPosts);

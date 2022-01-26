@@ -8,12 +8,12 @@ export const errorHandler = async (
   try {
     await next();
   } catch (err) {
-    console.log('error')
     if (isHttpError(err)) {
-      console.log('isHttpError')
+      console.log("isHttpError");
       response.body = { error: err.message };
       response.status = err.status;
     } else {
+      console.error(err);
       response.body = { error: "System error" };
       response.status = 500;
       // throw err;
