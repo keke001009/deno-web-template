@@ -19,12 +19,14 @@ class Comment extends Model {
     content: { type: DataTypes.STRING },
     depth: { type: DataTypes.INTEGER },
     groupId: { type: DataTypes.INTEGER },
+    delYn: { type: DataTypes.STRING, length: 1 },
   };
 
   static defaults = {
     parentId: 0,
     depth: 0,
     groupId: 0,
+    delYn: "N",
   };
 
   static post() {
@@ -45,6 +47,9 @@ class Comment extends Model {
       content: [required],
     },
   };
+
+  // Comment[]
+  comments: any = [];
 }
 
 export default Comment;

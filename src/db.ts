@@ -1,5 +1,8 @@
 import { Database, DataTypes, env, Model } from "./deps.ts";
-import { Values } from "https://deno.land/x/denodb@v1.0.40/lib/data-types.ts";
+import {
+  FieldValue,
+  Values,
+} from "https://deno.land/x/denodb@v1.0.40/lib/data-types.ts";
 import { validate } from "validasaur";
 import Post from "/domain/entities/Post.ts";
 import Comment from "/domain/entities/Comment.ts";
@@ -25,6 +28,7 @@ Relationships.belongsTo(Comment, Post);
 db.link([Post, Comment]);
 
 const create = Model.create;
+const deleteById = Model.deleteById;
 const save = Model.prototype.save;
 const update = Model.prototype.update;
 function getValue(self: any): Values {
@@ -67,6 +71,18 @@ Model.prototype.update = async function (): Promise<any> {
   const rules = model?.rules?.update;
   rules && await validate(values, rules);
   return await update.call(this);
+};
+
+Model.deleteById = async function (id: FieldValue): Promise<any> {
+  const self = this as any;
+  console.error(self);
+  if (self?.fields?.delYn?.type == "string") {
+    const item = await self.find.call(self, id);
+    item.delYn = "Y";
+    item.updated_at = new Date();
+    return await item.update();
+  }
+  return await deleteById.call(self, id);
 };
 
 export default db;

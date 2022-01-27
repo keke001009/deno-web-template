@@ -6,7 +6,11 @@ import {
 import db from "/db.ts";
 import Post from "/domain/entities/Post.ts";
 import Comment from "/domain/entities/Comment.ts";
-import { readComments, writeComment } from "/domain/services/comment.ts";
+import {
+  deleteById,
+  readComments,
+  writeComment,
+} from "/domain/services/comment.ts";
 import { Database } from "/deps.ts";
 import { Client } from "https://deno.land/x/mysql/mod.ts";
 import Random from "https://deno.land/x/random@v1.1.2/Random.js";
@@ -58,15 +62,6 @@ Deno.test("게시물 및 댓글 조회", async (t) => {
     const post = await Post.makeSample();
     const post1 = await Post.makeSample();
     const id = 1;
-    // assertEquals(post, 1);
-    // assertEquals(id, 1);
-    // await Comment.create([{ content : r.string( 5, Random.UPPER_ALPHABETS ), postId : id, depth : 1 },
-    //   { content : r.string( 5, Random.UPPER_ALPHABETS ), postId : id, depth : 2  },
-    //   { content : r.string( 5, Random.UPPER_ALPHABETS ), postId : id, depth : 3 },
-    //   { content : r.string( 5, Random.UPPER_ALPHABETS ), postId : id, parentId : 1, depth : 1, groupId : 1 },
-    //   { content : r.string( 5, Random.UPPER_ALPHABETS ), postId : id, parentId : 1, depth : 2, groupId : 1 },
-    //   { content : r.string( 5, Random.UPPER_ALPHABETS ), postId : 2, parentId : 0, depth : 1, groupId: 2 }
-    // ])
     await Comment.create([
       { content: "1번글 1", postId: id, depth: 1, groupId: 1 },
       { content: "1번글 2", postId: id, depth: 2, groupId: 2 },
@@ -75,26 +70,21 @@ Deno.test("게시물 및 댓글 조회", async (t) => {
       { content: "1번글 1-2", postId: id, parentId: 1, depth: 2, groupId: 1 },
       { content: "2번글 1", postId: 2, parentId: 0, depth: 1, groupId: 1 },
     ]);
-
-    // const post1 = await Post.makeSample()
-    // const post1Id = 2
-    // await Comment.create([{ content : r.string( 5, Random.UPPER_ALPHABETS ), postId : post1Id },
-    //   { content : r.string( 5, Random.UPPER_ALPHABETS ), postId : post1Id, parentId : 6  },
-    //   { content : r.string( 5, Random.UPPER_ALPHABETS ), postId : post1Id },
-    //   { content : r.string( 5, Random.UPPER_ALPHABETS ), postId : post1Id, parentId : 7 },
-    //   { content : r.string( 5, Random.UPPER_ALPHABETS ), postId : post1Id, parentId : 6 }
-    // ])
     const comments = await readComments() || [];
+    assertEquals(comments.length, 4);
+    await db.close();
+  });
+});
 
-    // assertEquals(comments.length, 6);
-    // assertEquals(comments, 1);
-    // comments.forEach((item : Comment)=>{
-    //   console.log(item)
-    //   if(item.parentId == 0) {
-    //     results.push(item)
-    //   }
-    // })
-
+Deno.test("댓글 삭제하기", async (t) => {
+  await t.step("deleteById", async (t) => {
+    await db.sync({ drop: true });
+    await Post.makeSample();
+    await Comment.create([
+      { content: "테스트", postId: 1 },
+    ]);
+    const result = await Comment.deleteById(1);
+    assertEquals(result, 1);
     await db.close();
   });
 });

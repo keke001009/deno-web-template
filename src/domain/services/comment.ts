@@ -25,7 +25,7 @@ export const writeComment = async () => {
 
 export const readComments = async () => {
   const client = db.getClient() as Client;
-  const { rows: comments = [] } = await client.execute(`
+  const { rows = [] } = await client.execute(`
     select
       a.id
       ,a.content
@@ -41,16 +41,24 @@ export const readComments = async () => {
     order by a.group_id asc, parent_id asc, depth asc, a.id desc
   `);
 
-  const results: Comment[] = [];
-  comments.forEach((item: Comment) => {
-    if (item) {
-      results.push(item);
-    }
-    if (item.parent != 0) {
-      if (results[results.length - 1].id == item.parent) {
-        results[results.length - 1].nexts = [item];
+  const comments: any[] = rows?.map((row: Comment) => {
+    row.comments = [];
+    return row;
+  }) || [];
+  const results = comments.reduce((tmp, item) => {
+    if (item.parent_id != 0) {
+      if (tmp[tmp.length - 1].id == item.parent_id) {
+        tmp[tmp.length - 1].comments.push(item);
       }
+    } else {
+      tmp.push(item);
     }
-  });
-  return comments as Comment[];
+    return tmp;
+  }, []);
+
+  return results as Comment[];
+};
+
+export const deleteById = async (id: number) => {
+  await Comment.deleteById(id);
 };
