@@ -15,7 +15,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo '##### Build #####'
-                sh 'docker-compose -f docker-compose.prod.yml build'
+                sh 'docker-compose -f docker-compose.prod.yml --env-file .env.prod build'
             }
         }
        stage('Tag') {
