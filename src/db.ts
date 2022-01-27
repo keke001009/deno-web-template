@@ -1,9 +1,9 @@
-import { Database, env, Model, } from "./deps.ts";
+import { Database, DataTypes, env, Model } from "./deps.ts";
 import { Values } from "https://deno.land/x/denodb@v1.0.40/lib/data-types.ts";
 import { validate } from "validasaur";
 import Post from "/domain/entities/Post.ts";
 import Comment from "/domain/entities/Comment.ts";
-import { Relationships } from 'denodb';
+import { Relationships } from "denodb";
 /**
  * mysql
  */
@@ -19,7 +19,8 @@ const db = new Database(
   },
 );
 
-Relationships.belongsTo(Post, Comment);
+// await db.sync({ drop : true });
+Relationships.belongsTo(Comment, Post);
 
 db.link([Post, Comment]);
 
@@ -40,7 +41,9 @@ function getValue(self: any): Values {
   return values;
 }
 
-Model.create = async function (values: Values | Values[]): Promise<any> {
+Model.create = async function (
+  values: Values | Values[],
+): Promise<any | any[]> {
   const insertions = Array.isArray(values) ? values : [values];
   insertions.some(async (value) => {
     const model = this.constructor as any;

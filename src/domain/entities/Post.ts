@@ -15,7 +15,12 @@ class Post extends Model {
   static timestamps = true;
 
   static fields = {
-    id: { primaryKey: true, autoIncrement: true },
+    id: {
+      primaryKey: true,
+      autoIncrement: true,
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
     uuid: { type: DataTypes.UUID },
     username: { type: DataTypes.STRING },
     content: { type: DataTypes.STRING },
@@ -24,6 +29,10 @@ class Post extends Model {
   static comments() {
     return this.hasMany(Comment);
   }
+
+  static defaults = {
+    id: 0,
+  };
 
   static rules = {
     create: {
@@ -53,13 +62,17 @@ class Post extends Model {
       "waterisdead",
     ];
     const i = Math.ceil(Math.random() * (5 - 1));
-    const post = new Post();
-    post.uuid = uuid.generate();
-    post.username = usernames[i];
-    post.content = contents[i];
-    // console.log(Post);
-    await post.save();
-    return post;
+    // const post = new Post();
+    // post.uuid = uuid.generate();
+    // post.username = usernames[i];
+    // post.content = contents[i];
+    // // console.log(Post);
+    // await post.save();
+    return await Post.create({
+      uuid: uuid.generate(),
+      username: usernames[i],
+      content: contents[i],
+    });
   }
 }
 

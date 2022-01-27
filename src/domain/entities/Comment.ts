@@ -2,6 +2,7 @@ import { DataTypes, Model } from "/deps.ts";
 import { isNumber, minNumber, nullable, required, validate } from "validasaur";
 import { v4 as uuid } from "https://deno.land/std@0.74.0/uuid/mod.ts";
 import Post from "./Post.ts";
+import { FieldValue } from "https://deno.land/x/denodb@v1.0.40/lib/data-types.ts";
 
 /**
  * Post
@@ -13,8 +14,17 @@ class Comment extends Model {
 
   static fields = {
     id: { primaryKey: true, autoIncrement: true },
-    parentId: { type: DataTypes.INTEGER,allowNull: true, },
+    parentId: { type: DataTypes.INTEGER, allowNull: true },
+    postId: { type: DataTypes.INTEGER, allowNull: true, primaryKey: false },
     content: { type: DataTypes.STRING },
+    depth: { type: DataTypes.INTEGER },
+    groupId: { type: DataTypes.INTEGER },
+  };
+
+  static defaults = {
+    parentId: 0,
+    depth: 0,
+    groupId: 0,
   };
 
   static post() {
